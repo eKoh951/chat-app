@@ -16,7 +16,13 @@ msgForm.addEventListener('submit', (e) => {
 	e.preventDefault()
 	// e.target to get the form
 	const msgString = e.target.elements.message.value
-	client.emit('sendMessage', msgString)
+	// The function is for the acknowledgement
+	client.emit('sendMessage', msgString, (error) => {
+		if(error)
+			return console.log(error)
+		
+		console.log('Message delivered')
+	})
 })
 
 document.querySelector('#send-location').addEventListener('click', () => {
@@ -27,6 +33,8 @@ document.querySelector('#send-location').addEventListener('click', () => {
 		client.emit('sendLocation', {
 			lat: position.coords.latitude,
 			long: position.coords.longitude
+		}, () => {
+			console.log('Location shared!')
 		})
 	})
 })
