@@ -30,9 +30,10 @@ client.on('message', (message) => {
 })
 
 // Listening to locationMessage event
-client.on('locationMessage', (url) => {
+client.on('locationMessage', (message) => {
 	const html = Mustache.render(locationMessageTemplate, {
-		url
+		url: message.url,
+		createdAt: moment(message.createdAt).format('h:mm a')
 	})
 	$messages.insertAdjacentHTML('beforeend', html)
 })
@@ -70,6 +71,7 @@ $sendLocationBtn.addEventListener('click', () => {
 		return alert('Geolocation is not supported by your browser.')
 
 	$sendLocationBtn.setAttribute('disabled', 'disabled')
+	$msgFormInput.focus()
 	navigator.geolocation.getCurrentPosition((position) => {
 		client.emit('sendLocation', {
 			lat: position.coords.latitude,
