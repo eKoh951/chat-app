@@ -17,6 +17,10 @@ const $messages = document.querySelector('#messages')
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
 
+// Options
+// Using the qs library (defined within the script markups in chat.html)
+const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+
 // Listening to message event
 client.on('message', (message) => {
 	console.log(message)
@@ -82,3 +86,5 @@ $sendLocationBtn.addEventListener('click', () => {
 		})
 	})
 })
+
+client.emit('join', { username, room })
