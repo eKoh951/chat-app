@@ -26,6 +26,7 @@ client.on('message', (message) => {
 	console.log(message)
 	// html will store the final html that renders to the browser
 	const html = Mustache.render(messageTemplate, {
+		username: message.username,
 		message: message.text,
 		createdAt: moment(message.createdAt).format('h:mm a')
 	})
@@ -36,6 +37,7 @@ client.on('message', (message) => {
 // Listening to locationMessage event
 client.on('locationMessage', (message) => {
 	const html = Mustache.render(locationMessageTemplate, {
+		username: message.username,
 		url: message.url,
 		createdAt: moment(message.createdAt).format('h:mm a')
 	})
@@ -87,4 +89,9 @@ $sendLocationBtn.addEventListener('click', () => {
 	})
 })
 
-client.emit('join', { username, room })
+client.emit('join', { username, room }, (error) => {
+	if(error) {
+		alert(error)
+		location.href = '/'
+	}
+})
