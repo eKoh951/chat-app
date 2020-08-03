@@ -13,6 +13,7 @@ const {	addUser,
 				getUser,
 				getUsersInRoom
 			} = require('./utils/users')
+const { isObject } = require('util')
 
 const app = express()
 const server = http.createServer(app)
@@ -41,7 +42,11 @@ io.on('connection', (socket) => {
 		// Flag: 'broadcast' send to every client but to the current client
 		socket.emit('message', generateMessage('Welcome!'))
 		socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined!`))
-		
+		io.to(user.room).emit('roomData', {
+			room: user.room,
+			users: getUsersInRoom(user.room)
+		})
+
 		// We call the callback function so the client knows that he was able to join
 		callback()
 	})
@@ -64,6 +69,10 @@ io.on('connection', (socket) => {
 
 		if(user) {
 			io.to(user.room).emit('message', generateMessage(`User ${user.username} has left!`))
+			io.to(user.room).emit('roomData', {
+				room: user.room,
+				users: getUsersInRoom(user.room)
+			})
 		}
 
 	})
